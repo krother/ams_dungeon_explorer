@@ -90,6 +90,9 @@ while not exit_pressed:
 
     draw_dungeon(player, walls, coins, player_img, wall_img, coin_img)
 
+    # remember old position
+    old_x, old_y = player.x, player.y
+
     # handle keyboard input
     key = chr(cv2.waitKey(1) & 0xFF)
     if key == 'd' and player.x < 9:
@@ -108,5 +111,19 @@ while not exit_pressed:
         player.x += 2
     elif key == 'q':  # TODO: use ESCAPE instead
         exit_pressed = True
+
+    # check for walls
+    for wall in walls:
+        if player.x == wall.x and player.y == wall.y:
+            player.x, player.y = old_x, old_y
+
+    # collect coin if there is any
+    for coin in coins:
+        if player.x == coin.x and player.y == coin.y:
+            # we found a coin
+            coins.remove(coin)   # remove the coin we found from the level
+            player.coins += coin.value
+            print("you now have", player.coins, "coins")
+            break  # stop the loop because we modified coins
     
 cv2.destroyAllWindows()
