@@ -94,10 +94,8 @@ class DungeonExplorer(BaseModel):
         for c in self.coins:
             result.append([c.x, c.y, "coin"])
         for d in self.doors:
-            result.append([d.x, d.y, "open_door"])        
+            result.append([d.x, d.y, "open_door"])
         return result
-
-    
 
 # define the level we will play
 dungeon_explorer = DungeonExplorer(
