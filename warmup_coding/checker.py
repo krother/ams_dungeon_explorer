@@ -1,14 +1,7 @@
 """
 Checkerboard: Write a program that prints this:
 
-#_#_#_#_
-_#_#_#_#
-#_#_#_#_
-_#_#_#_#
-#_#_#_#_
-_#_#_#_#
-#_#_#_#_
-_#_#_#_#
+solved on Jan 17th by AMS students
 """
 print(
 """
@@ -40,3 +33,4 @@ print()
 for i in range(8):
     print(line)
     line, line2 = line2, line
+ 
