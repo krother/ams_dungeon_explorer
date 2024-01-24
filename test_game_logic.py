@@ -8,23 +8,22 @@ To execute the tests, do:
    pytest
 
 """
-from game_logic import DungeonExplorer, Player, Wall, Coin, Door
+from game_logic import DungeonExplorer, Player, Wall, Coin, Door, start_level
+
 
 def test_move():
     # three steps in every automated test:
     # 1. create data for testing (fixture)
     d = DungeonExplorer(
         player=Player(x=4, y=4),
-        walls = [],
-        coins = [],
+        walls=[],
+        coins=[],
     )
     # 2. execute the code that we test
     d.move_command("right")
     obj = d.get_objects()
     # 3. check whether the result is what we expect (assertion)
-    assert obj == [
-        [5, 4, "player"]
-    ]
+    assert obj == [[5, 4, "player"]]
 
 
 def test_wall():
@@ -32,8 +31,8 @@ def test_wall():
     # 1. create data for testing (fixture)
     d = DungeonExplorer(
         player=Player(x=4, y=4),
-        walls = [Wall(x=5, y=4)],
-        coins = [],
+        walls=[Wall(x=5, y=4)],
+        coins=[],
     )
     # 2. execute the code that we test
     d.move_command("right")
@@ -50,8 +49,8 @@ def test_coin():
     # 1. create data for testing (fixture)
     d = DungeonExplorer(
         player=Player(x=4, y=4),
-        walls = [],
-        coins = [
+        walls=[],
+        coins=[
             Coin(x=7, y=3, value=777),
         ],
     )
@@ -67,21 +66,34 @@ def test_coin():
         [7, 3, "player"],
     ]
 
+
 def test_exit():
     """Player can walk through an open door"""
     # 1. create data for testing (fixture)
     d = DungeonExplorer(
-        player=Player(x=4, y=4),
-        walls = [],
-        coins = [],
-        doors = [Door(x=3, y=4)]
+        player=Player(x=4, y=4), walls=[], coins=[], doors=[Door(x=3, y=4)]
     )
     # 2. execute the code that we test
     d.move_command("left")
     obj = d.get_objects()
     # 3. check whether the result is what we expect (assertion)
-    assert d.is_running() == False
-    assert obj == [
-        [3, 4, "player"],
-        [3, 4, "open_door"],
+    assert d.event == "new level"
+    assert [0, 0, "player"] in obj
+
+
+def test_start_level():
+    d = DungeonExplorer(
+        player=Player(x=4, y=4), walls=[], coins=[], doors=[]
+    )  # add necessary parameters but they can be empty
+    level = [
+        "########",
+        "#.#....#",
+        "#.#.##.#",
+        "#.#..#.#",
+        "#.##.#.#",
+        "#....#x#",
+        "########",
     ]
+    start_level(d, level=level, start_position={"x": 1, "y": 1})
+    assert [1, 1, "player"] in d.get_objects()  # change if your interface is different
+    assert [4, 2, "wall"] in d.get_objects()  # an example wall

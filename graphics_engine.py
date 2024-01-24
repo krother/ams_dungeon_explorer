@@ -1,9 +1,11 @@
 """
 graphics engine for 2D games
 """
+from queue import Empty
 import numpy as np
 import cv2
 from game_logic import dungeon_explorer
+from cutscene import cutscene
 
 
 # map keyboard keys to move commands
@@ -20,6 +22,7 @@ MOVES = {
 #
 SCREEN_SIZE_X, SCREEN_SIZE_Y = 640, 640
 TILE_SIZE = 64
+
 
 def read_image(filename: str) -> np.ndarray:
     """
@@ -39,28 +42,41 @@ IMAGES = {
     "open_door": read_image("tiles/open_door.png"),
 }
 
+
 def draw(obj):
     frame = np.zeros((SCREEN_SIZE_Y, SCREEN_SIZE_X, 3), np.uint8)
     for x, y, name in obj:
         # calculate screen positions
         xpos, ypos = x * TILE_SIZE, y * TILE_SIZE
         image = IMAGES[name]
-        frame[ypos:ypos + TILE_SIZE, xpos:xpos + TILE_SIZE] = image
-    cv2.imshow('Dungeon Explorer', frame)
+        frame[ypos : ypos + TILE_SIZE, xpos : xpos + TILE_SIZE] = image
+    cv2.imshow("Dungeon Explorer", frame)
 
 
 exit_pressed = False
 while not exit_pressed and dungeon_explorer.is_running():
-
     # draw
     obj = dungeon_explorer.get_objects()
     draw(obj)
 
     # handle keyboard input
     key = chr(cv2.waitKey(1) & 0xFF)
-    if key == 'q':  # TODO: use ESCAPE instead
+    if key == "q":  # TODO: use ESCAPE instead
         exit_pressed = True
     if key in MOVES:
         dungeon_explorer.move_command(MOVES[key])
+    if dungeon_explorer.event == "new level":
+        dungeon_explorer.event = ""
+        cutscene(
+            text="Congratulations Warrior, you just completed the level. Now the real challenge starts.",
+            songfile="song18.mp3",
+            imagefile="title.png",
+        )
+        cutscene(
+            text="Welcome To The New Level ",
+            wait=5,
+            songfile="song18.mp3",
+            imagefile="title.png",
+        )
 
 cv2.destroyAllWindows()

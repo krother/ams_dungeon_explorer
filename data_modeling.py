@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 from pydantic import BaseModel
 
+
 #
 # define data model
 #
@@ -24,6 +25,7 @@ class Player(BaseModel):
     y: int
     health: int = 100
     coins: int = 0
+
 
 #
 # create a level
@@ -56,28 +58,28 @@ def draw_dungeon(player, walls, coins, player_img, wall_img, coin_img):
 
     # draw player
     xpos, ypos = player.x * TILE_SIZE, player.y * TILE_SIZE
-    frame[ypos:ypos + TILE_SIZE, xpos:xpos + TILE_SIZE] = player_img
+    frame[ypos : ypos + TILE_SIZE, xpos : xpos + TILE_SIZE] = player_img
 
     # draw walls
     for wall in walls:
         xpos, ypos = wall.x * TILE_SIZE, wall.y * TILE_SIZE
-        frame[ypos:ypos + TILE_SIZE, xpos:xpos + TILE_SIZE] = wall_img
+        frame[ypos : ypos + TILE_SIZE, xpos : xpos + TILE_SIZE] = wall_img
 
     # draw coins
     for coin in coins:
         xpos, ypos = coin.x * TILE_SIZE, coin.y * TILE_SIZE
-        frame[ypos:ypos + TILE_SIZE, xpos:xpos + TILE_SIZE] = coin_img
+        frame[ypos : ypos + TILE_SIZE, xpos : xpos + TILE_SIZE] = coin_img
 
-    cv2.imshow('Dungeon Explorer', frame)
+    cv2.imshow("Dungeon Explorer", frame)
 
 
 # define a function that doubles image size
 size2x = lambda a: np.kron(a, np.ones((2, 2, 1), dtype=a.dtype))
 
 # load image and extract square tiles from it
-wall_img = size2x(cv2.imread('tiles/wall.png'))
-coin_img = size2x(cv2.imread('tiles/gold.png'))
-player_img = size2x(cv2.imread('tiles/deep_elf_high_priest.png'))
+wall_img = size2x(cv2.imread("tiles/wall.png"))
+coin_img = size2x(cv2.imread("tiles/gold.png"))
+player_img = size2x(cv2.imread("tiles/deep_elf_high_priest.png"))
 
 
 # define boundaries of the 2D grid
@@ -87,7 +89,6 @@ min_y, max_y = 0, SCREEN_SIZE_Y // TILE_SIZE
 
 exit_pressed = False
 while not exit_pressed:
-
     draw_dungeon(player, walls, coins, player_img, wall_img, coin_img)
 
     # remember old position
@@ -95,21 +96,21 @@ while not exit_pressed:
 
     # handle keyboard input
     key = chr(cv2.waitKey(1) & 0xFF)
-    if key == 'd' and player.x < 9:
+    if key == "d" and player.x < 9:
         player.x += 1
-    elif key == 'a' and player.x > 0:
+    elif key == "a" and player.x > 0:
         player.x -= 1
-    elif key == 'w' and player.y > 0:
+    elif key == "w" and player.y > 0:
         player.y -= 1
-    elif key == 's':
+    elif key == "s":
         if player.y < 9:
             player.y += 1
         else:
             player.y = 0  # wrap-around move
 
-    elif key == 'j':
+    elif key == "j":
         player.x += 2
-    elif key == 'q':  # TODO: use ESCAPE instead
+    elif key == "q":  # TODO: use ESCAPE instead
         exit_pressed = True
 
     # check for walls
@@ -121,9 +122,9 @@ while not exit_pressed:
     for coin in coins:
         if player.x == coin.x and player.y == coin.y:
             # we found a coin
-            coins.remove(coin)   # remove the coin we found from the level
+            coins.remove(coin)  # remove the coin we found from the level
             player.coins += coin.value
             print("you now have", player.coins, "coins")
             break  # stop the loop because we modified coins
-    
+
 cv2.destroyAllWindows()

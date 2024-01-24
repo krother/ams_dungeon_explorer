@@ -23,7 +23,7 @@ def create_grid_string(floors: set[tuple[int, int]], xsize: int, ysize: int) -> 
     for y in range(ysize):
         for x in range(xsize):
             grid += "." if (x, y) in floors else "#"
-        grid += '\n'
+        grid += "\n"
     return grid
 
 
@@ -35,14 +35,14 @@ def get_all_floor_positions(xsize: int, ysize: int):
 def get_neighbors(x: int, y: int) -> list[tuple[int, int]]:
     """Returns a list with the 8 neighbor positions of (x, y)"""
     return [
-        (x, y-1),
-        (x, y+1),
-        (x-1, y),
-        (x+1, y),
-        (x-1, y-1),
-        (x-1, y+1),
-        (x+1, y-1),
-        (x+1, y+1)
+        (x, y - 1),
+        (x, y + 1),
+        (x - 1, y),
+        (x + 1, y),
+        (x - 1, y - 1),
+        (x - 1, y + 1),
+        (x + 1, y - 1),
+        (x + 1, y + 1),
     ]
 
 
@@ -64,7 +64,7 @@ def generate_floor_positions(xsize: int, ysize: int) -> set[tuple[int, int]]:
         for nb in neighbors:
             if nb in floors:
                 free.append(nb)
-        if len(free) < 7:
+        if len(free) < 5:
             floors.add((x, y))
         positions.remove((x, y))
     return floors
@@ -77,6 +77,6 @@ def create_maze(xsize: int, ysize: int):
     return maze
 
 
-if __name__ == '__main__':
-    maze = create_maze(xsize = 40, ysize = 20)
+if __name__ == "__main__":
+    maze = create_maze(xsize=9, ysize=9)
     print(maze)
