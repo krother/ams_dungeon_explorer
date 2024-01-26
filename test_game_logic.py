@@ -8,7 +8,7 @@ To execute the tests, do:
    pytest
 
 """
-from game_logic import DungeonExplorer, Player, Wall, Coin, Door, start_level
+from game_logic import DungeonExplorer, Player, Position, start_level
 
 
 def test_move():
@@ -31,7 +31,7 @@ def test_wall():
     # 1. create data for testing (fixture)
     d = DungeonExplorer(
         player=Player(x=4, y=4),
-        walls=[Wall(x=5, y=4)],
+        walls=[Position(x=5, y=4)],
         coins=[],
     )
     # 2. execute the code that we test
@@ -51,7 +51,7 @@ def test_coin():
         player=Player(x=4, y=4),
         walls=[],
         coins=[
-            Coin(x=7, y=3, value=777),
+            Position(x=7, y=3),
         ],
     )
     # 2. execute the code that we test
@@ -61,7 +61,7 @@ def test_coin():
     d.move_command("up")
     obj = d.get_objects()
     # 3. check whether the result is what we expect (assertion)
-    assert d.player.coins == 777
+    assert d.player.coins == 10
     assert obj == [
         [7, 3, "player"],
     ]
@@ -71,7 +71,7 @@ def test_exit():
     """Player can walk through an open door"""
     # 1. create data for testing (fixture)
     d = DungeonExplorer(
-        player=Player(x=4, y=4), walls=[], coins=[], doors=[Door(x=3, y=4)]
+        player=Player(x=4, y=4), walls=[], coins=[], doors=[Position(x=3, y=4)]
     )
     # 2. execute the code that we test
     d.move_command("left")

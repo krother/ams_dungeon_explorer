@@ -1,7 +1,6 @@
 """
 the Dungeon Explorere game logic
 """
-# REFACTOR: remove is_running
 # REFACTOR: remove redundant classes
 # REFACTOR: move all levels to extra module
 
@@ -32,21 +31,9 @@ Level = [
 #
 # define data model
 #
-class Wall(BaseModel):
+class Position(BaseModel):
     x: int
     y: int
-
-
-class Door(BaseModel):
-    x: int
-    y: int
-
-
-class Coin(BaseModel):
-    x: int
-    y: int
-    value: int = 10  # TODO: remove value
-
 
 class Player(BaseModel):
     x: int
@@ -57,9 +44,9 @@ class Player(BaseModel):
 
 class DungeonExplorer(BaseModel):
     player: Player
-    walls: list[Wall]  # does not work for Python 3.8, not sure about 3.9
-    coins: list[Coin]
-    doors: list[Door] = []
+    walls: list[Position]  # does not work for Python 3.8, not sure about 3.9
+    coins: list[Position]
+    doors: list[Position] = []
     event: str = ""
 
     def move_command(self, action: str) -> None:
@@ -92,7 +79,7 @@ class DungeonExplorer(BaseModel):
             if self.player.x == coin.x and self.player.y == coin.y:
                 # we found a coin
                 self.coins.remove(coin)  # remove the coin we found from the level
-                self.player.coins += coin.value
+                self.player.coins += 10
                 print("you now have", self.player.coins, "coins")
                 break  # stop the loop because we modified coins
 
@@ -122,18 +109,18 @@ class DungeonExplorer(BaseModel):
 dungeon_explorer = DungeonExplorer(
     player=Player(x=4, y=4),
     walls=[
-        Wall(x=0, y=0),
-        Wall(x=1, y=0),
-        Wall(x=2, y=0),
-        Wall(x=3, y=0),
-        Wall(x=4, y=6),
+       Position(x=0, y=0),
+       Position(x=1, y=0),
+       Position(x=2, y=0),
+       Position(x=3, y=0),
+       Position(x=4, y=6),
     ],
     coins=[
-        Coin(x=0, y=1, value=100),
-        Coin(x=2, y=5),
+        Position(x=0, y=1),
+        Position(x=2, y=5),
     ],
     doors=[
-        Door(x=9, y=9),
+        Position(x=9, y=9),
     ],
 )
 
@@ -149,11 +136,11 @@ def start_level(
     for y, row in enumerate(level):  # y is a row number 0, 1, 2, ...
         for x, tile in enumerate(row):  # x is a column number 0, 1, 2, ...
             if tile == "#":
-                wall = Wall(x=x, y=y)
+                wall = Position(x=x, y=y)
                 dungeon.walls.append(wall)
             if tile == "X":
-                door = Door(x=x, y=y)
+                door = Position(x=x, y=y)
                 dungeon.doors.append(door)
             if tile == "$":
-                coin = Coin(x=x, y=y)
+                coin = Position(x=x, y=y)
                 dungeon.coins.append(coin)
