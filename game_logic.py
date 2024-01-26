@@ -1,6 +1,9 @@
 """
 the Dungeon Explorere game logic
 """
+# REFACTOR: remove is_running
+# REFACTOR: remove redundant classes
+# REFACTOR: move all levels to extra module
 
 # TODO: add stationary monster
 # TODO: collect all coins to exit level and defeat all monsters
@@ -8,8 +11,9 @@ the Dungeon Explorere game logic
 # TODO: add a bag for collecting coins
 # TODO: show health bar
 # TODO: show contents of bag
+# REFACTOR: empty default arguments for DungeonExplorer
 
-from pydantic import BaseModelw
+from pydantic import BaseModel
 
 Level = [
     ".......$.#",
@@ -41,13 +45,13 @@ class Door(BaseModel):
 class Coin(BaseModel):
     x: int
     y: int
-    value: int = 10
+    value: int = 10  # TODO: remove value
 
 
 class Player(BaseModel):
     x: int
     y: int
-    health: int = 100
+    health: int = 100   # TODO: not used at the moment!!
     coins: int = 0
 
 
@@ -56,15 +60,7 @@ class DungeonExplorer(BaseModel):
     walls: list[Wall]  # does not work for Python 3.8, not sure about 3.9
     coins: list[Coin]
     doors: list[Door] = []
-    running: bool = True
     event: str = ""
-
-    # we define our own functions inside this class
-    # function inside a class have a special parameter 'self'.
-    # we also may define a return type
-    def is_running(self) -> bool:
-        """True as long as the game is not finished"""
-        return self.running
 
     def move_command(self, action: str) -> None:
         """handles player actions like 'left', 'right', 'jump', 'fireball'"""

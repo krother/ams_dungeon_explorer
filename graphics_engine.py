@@ -54,7 +54,7 @@ def draw(obj):
 
 
 exit_pressed = False
-while not exit_pressed and dungeon_explorer.is_running():
+while not exit_pressed:
     # draw
     obj = dungeon_explorer.get_objects()
     draw(obj)
@@ -66,7 +66,7 @@ while not exit_pressed and dungeon_explorer.is_running():
     if key in MOVES:
         dungeon_explorer.move_command(MOVES[key])
     if dungeon_explorer.event == "new level":
-        dungeon_explorer.event = ""
+        dungeon_explorer.event = ""  # delete the event
         cutscene(
             text="Congratulations Warrior, you just completed the level. Now the real challenge starts.",
             songfile="song18.mp3",
