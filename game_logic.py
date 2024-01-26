@@ -1,7 +1,6 @@
 """
 the Dungeon Explorere game logic
 """
-# REFACTOR: remove redundant classes
 # REFACTOR: move all levels to extra module
 
 # TODO: add stationary monster
@@ -13,20 +12,7 @@ the Dungeon Explorere game logic
 # REFACTOR: empty default arguments for DungeonExplorer
 
 from pydantic import BaseModel
-
-Level = [
-    ".......$.#",
-    ".##.#.#.##",
-    ".#.....X.#",
-    ".#..##.#.#",
-    ".#.#...$.#",
-    ".##.###..#",
-    "......#.##",
-    "..##..#..#",
-    ".......$.#",
-    "##########",
-]
-
+from levels import Level2, Level3
 
 #
 # define data model
@@ -87,7 +73,7 @@ class DungeonExplorer(BaseModel):
         for door in self.doors:
             if self.player.x == door.x and self.player.y == door.y:
                 self.event = "new level"
-                start_level(dungeon=self, level=Level, start_position={"x": 0, "y": 0})
+                start_level(dungeon=self, level=Level2, start_position={"x": 0, "y": 0})
 
     def get_objects(self) -> list[list[int, int, str]]:
         """
