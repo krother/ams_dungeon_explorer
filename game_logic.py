@@ -1,6 +1,7 @@
 """
 the Dungeon Explorere game logic
 """
+
 # TODO: add stationary monster
 # TODO: collect all coins to exit level and defeat all monsters
 # TODO: create a few more levels
@@ -8,7 +9,7 @@ the Dungeon Explorere game logic
 # TODO: show health bar
 # TODO: show contents of bag
 
-from pydantic import BaseModel
+from pydantic import BaseModelw
 
 Level = [
     ".......$.#",
