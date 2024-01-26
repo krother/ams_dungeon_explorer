@@ -2,8 +2,8 @@
 the Dungeon Explorere game logic
 """
 # TODO: add stationary monster
+# TODO: add fireball
 # TODO: collect all coins to exit level and defeat all monsters
-# TODO: create a few more levels
 # TODO: add a bag for collecting coins
 # TODO: show health bar
 # TODO: show contents of bag
@@ -33,7 +33,7 @@ class DungeonExplorer(BaseModel):
     coins: list[Position]
     doors: list[Position] = []
     event: str = ""
-    level_number: int = 1
+    level_number: int = 0
 
 
 def move_command(dungeon, player, action: str) -> None:
@@ -73,9 +73,15 @@ def move_command(dungeon, player, action: str) -> None:
     # check for doors
     for door in dungeon.doors:
         if player.x == door.x and player.y == door.y:
-            dungeon.event = "new level"
             dungeon.level_number += 1
-            start_level(dungeon=dungeon, level=LEVELS[dungeon.level_number -2], start_position={"x": 0, "y": 0})
+            if dungeon.level_number == len(LEVELS):
+                dungeon.event = "game over"
+            else:
+                dungeon.event = "new level"
+                start_level(dungeon=dungeon,
+                        level=LEVELS[dungeon.level_number],
+                        start_position={"x": 0, "y": 0}
+                        )
 
 
 def get_objects(dungeon) -> list[list[int, int, str]]:
@@ -97,20 +103,9 @@ def get_objects(dungeon) -> list[list[int, int, str]]:
 # define the level we will play
 dungeon_explorer = DungeonExplorer(
     player=Player(x=4, y=4),
-    walls=[
-       Position(x=0, y=0),
-       Position(x=1, y=0),
-       Position(x=2, y=0),
-       Position(x=3, y=0),
-       Position(x=4, y=6),
-    ],
-    coins=[
-        Position(x=0, y=1),
-        Position(x=2, y=5),
-    ],
-    doors=[
-        Position(x=9, y=9),
-    ],
+    walls=[],
+    coins=[],
+    doors=[],
 )
 
 
@@ -133,3 +128,5 @@ def start_level(
             if tile == "$":
                 coin = Position(x=x, y=y)
                 dungeon.coins.append(coin)
+
+start_level(dungeon_explorer, LEVELS[0], {"x" : 4, "y" : 4})

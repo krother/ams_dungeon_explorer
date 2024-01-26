@@ -52,8 +52,8 @@ def draw(obj):
     cv2.imshow("Dungeon Explorer", frame)
 
 
-exit_pressed = False
-while not exit_pressed:
+exit_game = False
+while not exit_game:
     # draw
     obj = get_objects(dungeon_explorer)
     draw(obj)
@@ -61,7 +61,7 @@ while not exit_pressed:
     # handle keyboard input
     key = chr(cv2.waitKey(1) & 0xFF)
     if key == "q":  # TODO: use ESCAPE instead
-        exit_pressed = True
+        exit_game = True
     if key in MOVES:
         move_command(dungeon_explorer, dungeon_explorer.player, MOVES[key])
     if dungeon_explorer.event == "new level":
@@ -77,5 +77,14 @@ while not exit_pressed:
             songfile="song18.mp3",
             imagefile="title.png",
         )
+    elif dungeon_explorer.event == "game over":
+        cutscene(
+            text="Congratulations! You finished all levels.",
+            wait=5,
+            songfile="song18.mp3",
+            imagefile="title.png",
+        )
+        exit_game = True
+
 
 cv2.destroyAllWindows()
