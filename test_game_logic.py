@@ -8,7 +8,7 @@ To execute the tests, do:
    pytest
 
 """
-from game_logic import DungeonExplorer, Player, Position, start_level
+from game_logic import DungeonExplorer, Player, Position, start_level, get_objects, move_command
 
 
 def test_move():
@@ -20,8 +20,8 @@ def test_move():
         coins=[],
     )
     # 2. execute the code that we test
-    d.move_command("right")
-    obj = d.get_objects()
+    move_command(d, d.player, "right")
+    obj = get_objects(d)
     # 3. check whether the result is what we expect (assertion)
     assert obj == [[5, 4, "player"]]
 
@@ -35,8 +35,8 @@ def test_wall():
         coins=[],
     )
     # 2. execute the code that we test
-    d.move_command("right")
-    obj = d.get_objects()
+    move_command(d, d.player, "right")
+    obj = get_objects(d)
     # 3. check whether the result is what we expect (assertion)
     assert obj == [
         [4, 4, "player"],
@@ -55,11 +55,11 @@ def test_coin():
         ],
     )
     # 2. execute the code that we test
-    d.move_command("right")
-    d.move_command("right")
-    d.move_command("right")
-    d.move_command("up")
-    obj = d.get_objects()
+    move_command(d, d.player, "right")
+    move_command(d, d.player, "right")
+    move_command(d, d.player, "right")
+    move_command(d, d.player, "up")
+    obj = get_objects(d)
     # 3. check whether the result is what we expect (assertion)
     assert d.player.coins == 10
     assert obj == [
@@ -74,8 +74,8 @@ def test_exit():
         player=Player(x=4, y=4), walls=[], coins=[], doors=[Position(x=3, y=4)]
     )
     # 2. execute the code that we test
-    d.move_command("left")
-    obj = d.get_objects()
+    move_command(d, d.player, "left")
+    obj = get_objects(d)
     # 3. check whether the result is what we expect (assertion)
     assert d.event == "new level"
     assert [0, 0, "player"] in obj
@@ -95,5 +95,5 @@ def test_start_level():
         "########",
     ]
     start_level(d, level=level, start_position={"x": 1, "y": 1})
-    assert [1, 1, "player"] in d.get_objects()  # change if your interface is different
-    assert [4, 2, "wall"] in d.get_objects()  # an example wall
+    assert [1, 1, "player"] in get_objects(d)  # change if your interface is different
+    assert [4, 2, "wall"] in get_objects(d)  # an example wall

@@ -1,8 +1,6 @@
 """
 the Dungeon Explorere game logic
 """
-# REFACTOR: move all levels to extra module
-
 # TODO: add stationary monster
 # TODO: collect all coins to exit level and defeat all monsters
 # TODO: create a few more levels
@@ -12,7 +10,7 @@ the Dungeon Explorere game logic
 # REFACTOR: empty default arguments for DungeonExplorer
 
 from pydantic import BaseModel
-from levels import Level2, Level3
+from levels import LEVELS
 
 #
 # define data model
@@ -20,6 +18,7 @@ from levels import Level2, Level3
 class Position(BaseModel):
     x: int
     y: int
+
 
 class Player(BaseModel):
     x: int
@@ -34,61 +33,65 @@ class DungeonExplorer(BaseModel):
     coins: list[Position]
     doors: list[Position] = []
     event: str = ""
+    level_number: int = 1
 
-    def move_command(self, action: str) -> None:
-        """handles player actions like 'left', 'right', 'jump', 'fireball'"""
-        # remember old position
-        old_x, old_y = self.player.x, self.player.y
 
-        if action == "right" and self.player.x < 9:
-            self.player.x += 1
-        elif action == "left" and self.player.x > 0:
-            self.player.x -= 1
-        elif action == "up" and self.player.y > 0:
-            self.player.y -= 1
-        elif action == "down":
-            if self.player.y < 9:
-                self.player.y += 1
-            else:
-                self.player.y = 0  # wrap-around move
+def move_command(dungeon, player, action: str) -> None:
+    """handles player actions like 'left', 'right', 'jump', 'fireball'"""
+    # remember old position
+    old_x, old_y = player.x, player.y
 
-        elif action == "jump":
-            self.player.x += 2
+    if action == "right" and player.x < 9:
+        player.x += 1
+    elif action == "left" and player.x > 0:
+        player.x -= 1
+    elif action == "up" and player.y > 0:
+        player.y -= 1
+    elif action == "down":
+        if player.y < 9:
+            player.y += 1
+        else:
+            player.y = 0  # wrap-around move
 
-        # check for walls
-        for wall in self.walls:
-            if self.player.x == wall.x and self.player.y == wall.y:
-                self.player.x, self.player.y = old_x, old_y
+    elif action == "jump":
+        player.x += 2
 
-        # collect coin if there is any
-        for coin in self.coins:
-            if self.player.x == coin.x and self.player.y == coin.y:
-                # we found a coin
-                self.coins.remove(coin)  # remove the coin we found from the level
-                self.player.coins += 10
-                print("you now have", self.player.coins, "coins")
-                break  # stop the loop because we modified coins
+    # check for walls
+    for wall in dungeon.walls:
+        if player.x == wall.x and player.y == wall.y:
+            player.x, player.y = old_x, old_y
 
-        # check for doors
-        for door in self.doors:
-            if self.player.x == door.x and self.player.y == door.y:
-                self.event = "new level"
-                start_level(dungeon=self, level=Level2, start_position={"x": 0, "y": 0})
+    # collect coin if there is any
+    for coin in dungeon.coins:
+        if player.x == coin.x and player.y == coin.y:
+            # we found a coin
+            dungeon.coins.remove(coin)  # remove the coin we found from the level
+            player.coins += 10
+            print("you now have", player.coins, "coins")
+            break  # stop the loop because we modified coins
 
-    def get_objects(self) -> list[list[int, int, str]]:
-        """
-        returns everything inside the dungeon
-        as a list of (x, y, object_type) items.
-        """
-        result = []
-        result.append([self.player.x, self.player.y, "player"])
-        for w in self.walls:
-            result.append([w.x, w.y, "wall"])
-        for c in self.coins:
-            result.append([c.x, c.y, "coin"])
-        for d in self.doors:
-            result.append([d.x, d.y, "open_door"])
-        return result
+    # check for doors
+    for door in dungeon.doors:
+        if player.x == door.x and player.y == door.y:
+            dungeon.event = "new level"
+            dungeon.level_number += 1
+            start_level(dungeon=dungeon, level=LEVELS[dungeon.level_number -2], start_position={"x": 0, "y": 0})
+
+
+def get_objects(dungeon) -> list[list[int, int, str]]:
+    """
+    returns everything inside the dungeon
+    as a list of (x, y, object_type) items.
+    """
+    result = []
+    result.append([dungeon.player.x, dungeon.player.y, "player"])
+    for w in dungeon.walls:
+        result.append([w.x, w.y, "wall"])
+    for c in dungeon.coins:
+        result.append([c.x, c.y, "coin"])
+    for d in dungeon.doors:
+        result.append([d.x, d.y, "open_door"])
+    return result
 
 
 # define the level we will play

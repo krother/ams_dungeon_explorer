@@ -1,10 +1,9 @@
 """
 graphics engine for 2D games
 """
-from queue import Empty
 import numpy as np
 import cv2
-from game_logic import dungeon_explorer
+from game_logic import dungeon_explorer, get_objects, move_command
 from cutscene import cutscene
 
 
@@ -56,7 +55,7 @@ def draw(obj):
 exit_pressed = False
 while not exit_pressed:
     # draw
-    obj = dungeon_explorer.get_objects()
+    obj = get_objects(dungeon_explorer)
     draw(obj)
 
     # handle keyboard input
@@ -64,7 +63,7 @@ while not exit_pressed:
     if key == "q":  # TODO: use ESCAPE instead
         exit_pressed = True
     if key in MOVES:
-        dungeon_explorer.move_command(MOVES[key])
+        move_command(dungeon_explorer, dungeon_explorer.player, MOVES[key])
     if dungeon_explorer.event == "new level":
         dungeon_explorer.event = ""  # delete the event
         cutscene(
