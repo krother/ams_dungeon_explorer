@@ -3,7 +3,7 @@ graphics engine for 2D games
 """
 import numpy as np
 import cv2
-from game_logic import dungeon_explorer, get_objects, move_command
+from game_logic import dungeon_explorer, get_objects, move_command, update
 from cutscene import cutscene
 
 
@@ -14,6 +14,8 @@ MOVES = {
     "w": "up",
     "s": "down",
     "j": "jump",
+    "f": "fireball",
+    "A": "fireball",
 }
 
 #
@@ -39,6 +41,8 @@ IMAGES = {
     "wall": read_image("tiles/wall.png"),
     "coin": read_image("tiles/gold.png"),
     "open_door": read_image("tiles/open_door.png"),
+    "trap": read_image("tiles/trap.png"),
+    "fireball": read_image("tiles/fireball.png")[::2,::2]
 }
 
 
@@ -51,12 +55,19 @@ def draw(obj):
         frame[ypos : ypos + TILE_SIZE, xpos : xpos + TILE_SIZE] = image
     cv2.imshow("Dungeon Explorer", frame)
 
+UPDATE_MAX = 25
 
+update_cycle = UPDATE_MAX
 exit_game = False
 while not exit_game:
-    # draw
+    # draw 
     obj = get_objects(dungeon_explorer)
     draw(obj)
+
+    update_cycle -= 1
+    if update_cycle <= 0:
+        update(dungeon_explorer)
+        update_cycle = UPDATE_MAX
 
     # handle keyboard input
     key = chr(cv2.waitKey(1) & 0xFF)
@@ -85,6 +96,13 @@ while not exit_game:
             imagefile="title.png",
         )
         exit_game = True
-
+    elif dungeon_explorer.event == "you died":
+        cutscene(
+            text="Game over. Try again.",
+            wait=5,
+            songfile="music/No Hope.mp3",
+            imagefile="title.png",
+        )
+        exit_game = True
 
 cv2.destroyAllWindows()
