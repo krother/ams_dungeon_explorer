@@ -15,7 +15,7 @@ MOVES = {
     "s": "down",
     "j": "jump",
     "f": "fireball",
-    "A": "fireball",
+    " ": "fireball",
 }
 
 #
@@ -42,7 +42,9 @@ IMAGES = {
     "coin": read_image("tiles/gold.png"),
     "open_door": read_image("tiles/open_door.png"),
     "trap": read_image("tiles/trap.png"),
-    "fireball": read_image("tiles/fireball.png")[::2,::2]
+    "fireball": read_image("tiles/fireball.png")[::2,::2], # fireball image is 64x64, make it smaller
+    "giant": read_image("tiles/giant.png"),
+    "dragon": read_image("tiles/dragon.png"),
 }
 
 

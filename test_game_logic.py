@@ -16,8 +16,6 @@ def test_move():
     # 1. create data for testing (fixture)
     d = DungeonExplorer(
         player=Player(position=Position(x=4, y=4)),
-        walls=[],
-        coins=[],
     )
     # 2. execute the code that we test
     move_command(d, d.player, "right")
@@ -32,7 +30,6 @@ def test_wall():
     d = DungeonExplorer(
         player=Player(position=Position(x=4, y=4)),
         walls=[Position(x=5, y=4)],
-        coins=[],
     )
     # 2. execute the code that we test
     move_command(d, d.player, "right")
@@ -49,7 +46,6 @@ def test_coin():
     # 1. create data for testing (fixture)
     d = DungeonExplorer(
         player=Player(position=Position(x=4, y=4)),
-        walls=[],
         coins=[
             Position(x=7, y=3),
         ],
